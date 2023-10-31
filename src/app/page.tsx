@@ -1,10 +1,15 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Item, { iItem } from "./home/item/item";
+import { ItemService } from "./service/item.service";
 
 export default function Home() {
   const [createdItem, setCreatedItem] = useState<iItem>(getNewCreatedItem());
   const [items, setItems] = useState<Array<iItem>>();
+
+  useEffect(() => {
+    ItemService.getList().then(setItems);
+  }, []);
 
   function createdItemChanged(item: iItem) {
     setCreatedItem(item);
@@ -14,10 +19,11 @@ export default function Home() {
     return { id: crypto.randomUUID(), title: '', description: '' };
   }
 
-  function saveClicked() {
+  async function saveClicked() {
+    const storedItem = await ItemService.create(createdItem);
     setItems(array => {
-      if (array) return [createdItem, ...array];
-      return [createdItem];
+      if (array) return [storedItem, ...array];
+      return [storedItem];
     });
     setCreatedItem(getNewCreatedItem());
   }
@@ -40,9 +46,14 @@ export default function Home() {
         <button onClick={saveClicked} className="item-creator__save-button button">Save</button>
       </div>
 
-      {renderedItems && renderedItems.length &&
-        <ul className="list">{renderedItems}</ul>
-      }
+      {/* list */}
+      {renderedItems && renderedItems.length > 0 && <ul className="list">{renderedItems}</ul>}
+
+      {/* Loading list */}
+      {!renderedItems && <p>Loading...</p>}
+
+      {/* Empty State */}
+      {renderedItems && !renderedItems.length && <p>Empty State</p>}
     </main>
   )
 }
