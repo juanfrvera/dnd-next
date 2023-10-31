@@ -1,0 +1,33 @@
+body {
+  background-color: blanchedalmond;
+}
+
+.input {
+  line-height: 36px;
+  font-size: 16px;
+  padding: 8px;
+}
+
+.item-creator {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.button {
+  cursor: pointer;
+  line-height: 36px;
+  font-size: 16px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
