@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Item, { iItem } from "./home/item/item";
 import { ItemService } from "./service/item.service";
+import ListItem from "./home/item/list-item";
 
 export default function Home() {
   const [createdItem, setCreatedItem] = useState<iItem>(getNewCreatedItem());
@@ -37,12 +38,12 @@ export default function Home() {
     })
   }
 
-  const renderedItems = items ? items.map(i => <li key={i.id}><Item {...i} onChange={listItemChanged}></Item></li>) : null;
+  const renderedItems = items ? items.map(i => <li key={i.id}><ListItem item={i} onChange={listItemChanged}></ListItem></li>) : null;
 
   return (
     <main className='home'>
       <div className="item-creator">
-        <Item {...createdItem} onChange={createdItemChanged}></Item>
+        <Item item={createdItem} onChange={createdItemChanged}></Item>
         <button onClick={saveClicked} className="item-creator__save-button button">Save</button>
       </div>
 

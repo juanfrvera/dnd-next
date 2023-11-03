@@ -28,6 +28,9 @@ body {
 
 .list {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
+  gap: 64px;
+}
+
+.clickable-text {
+  cursor: pointer;
 }
