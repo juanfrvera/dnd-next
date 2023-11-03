@@ -1,5 +1,7 @@
+$main-color: blanchedalmond;
+
 body {
-    background-color: blanchedalmond;
+    background-color: $main-color;
 }
 
 .input {
@@ -34,6 +36,12 @@ body {
 
 .home {
     &__body {
+        height: 98vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__list {
         display: flex;
         gap: 64px;
         align-items: center;
@@ -82,5 +90,13 @@ body {
 
     &__edit {
         max-width: 64px;
+    }
+}
+
+.svg {
+    background-color: #fdf8f0;
+
+    &__item-rect {
+        fill: $main-color;
     }
 }

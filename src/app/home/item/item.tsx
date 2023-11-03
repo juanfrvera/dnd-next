@@ -31,3 +31,7 @@ export default function Item(props: { item: iItem; onChange: (item: iItem) => un
 export interface iItem {
     id: string; title: string; description: string; tags?: string[];
 }
+
+export interface iSvgItem {
+    item: iItem, position: { x: number; y: number; };
+}
