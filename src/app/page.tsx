@@ -5,7 +5,7 @@ import { ItemService } from "./service/item.service";
 import ListItem from "./home/item/list-item";
 
 export default function Home() {
-  const [createdItem, setCreatedItem] = useState<iItem>(getNewCreatedItem());
+  const [createdItem, setCreatedItem] = useState<iItem | null>(null);
   const [items, setItems] = useState<Array<iItem>>();
 
   useEffect(() => {
@@ -20,13 +20,19 @@ export default function Home() {
     return { id: crypto.randomUUID(), title: '', description: '' };
   }
 
-  async function saveClicked() {
-    const storedItem = await ItemService.create(createdItem);
-    setItems(array => {
-      if (array) return [storedItem, ...array];
-      return [storedItem];
-    });
+  function createClicked() {
     setCreatedItem(getNewCreatedItem());
+  }
+
+  async function saveClicked() {
+    if (createdItem!.title || createdItem!.description) {
+      const storedItem = await ItemService.create(createdItem!);
+      setItems(array => {
+        if (array) return [storedItem, ...array];
+        return [storedItem];
+      });
+    }
+    setCreatedItem(null);
   }
 
   function listItemChanged(item: iItem) {
@@ -42,19 +48,25 @@ export default function Home() {
 
   return (
     <main className='home'>
-      <div className="item-creator">
-        <Item item={createdItem} onChange={createdItemChanged}></Item>
-        <button onClick={saveClicked} className="item-creator__save-button button">Save</button>
+      <div className="home__body">
+        {createdItem &&
+          <div className="item-creator">
+            <Item item={createdItem} onChange={createdItemChanged}></Item>
+            <button onClick={saveClicked} className="item-creator__save-button button">Ok</button>
+          </div>
+        }
+
+        {!createdItem && <button onClick={createClicked} className="button list-item home__create-button">Create</button>}
+
+        {/* list */}
+        {renderedItems && renderedItems.length > 0 && <ul className="list">{renderedItems}</ul>}
+
+        {/* Loading list */}
+        {!renderedItems && <p>Loading...</p>}
+
+        {/* Empty State */}
+        {renderedItems && !renderedItems.length && <p>Empty State</p>}
       </div>
-
-      {/* list */}
-      {renderedItems && renderedItems.length > 0 && <ul className="list">{renderedItems}</ul>}
-
-      {/* Loading list */}
-      {!renderedItems && <p>Loading...</p>}
-
-      {/* Empty State */}
-      {renderedItems && !renderedItems.length && <p>Empty State</p>}
     </main>
   )
 }
