@@ -3,11 +3,14 @@ import { DragEvent, useEffect, useState } from "react";
 import Item, { iItem, iSvgItem } from "./home/item/item";
 import { ItemService } from "./service/item.service";
 import ListItem from "./home/item/list-item";
+import InfoPanel from "./home/info-panel";
 
 export default function Home() {
   const [createdItem, setCreatedItem] = useState<iItem | null>(null);
   const [items, setItems] = useState<Array<iItem>>();
   const [svgItems, setSvgItems] = useState<Array<iSvgItem>>([]);
+  const [currentItem, setCurrentItem] = useState<iItem>();
+  const [showInfoPanel, setShowInfoPanel] = useState<boolean>();
 
   useEffect(() => {
     ItemService.getList().then(setItems);
@@ -36,7 +39,11 @@ export default function Home() {
     setCreatedItem(null);
   }
 
-  function listItemChanged(item: iItem) {
+  function listItemClicked(item: iItem) {
+    setCurrentItem(item);
+    setShowInfoPanel(true);
+  }
+  function itemChanged(item: iItem) {
     setItems(array => {
       const index = array!.findIndex(i => i.id === item.id);
       const finalArray = [...array!];
@@ -60,8 +67,12 @@ export default function Home() {
     setSvgItems(arr => [svgItem, ...arr]);
   }
 
+  function closeInfoPanel() {
+    setShowInfoPanel(false);
+  }
+
   const renderedItems = items ?
-    items.map(i => <li key={i.id}><ListItem item={i} onChange={listItemChanged} onDragEnd={dragEndedOnListItem}></ListItem></li>) : null;
+    items.map(i => <li key={i.id}><ListItem item={i} onClick={listItemClicked} onDragEnd={dragEndedOnListItem}></ListItem></li>) : null;
 
   const renderedSvgItems = svgItems.map(s =>
     <g key={s.item.id} x={s.position.x} y={s.position.y} className="svg__item">
@@ -73,28 +84,35 @@ export default function Home() {
   return (
     <main className='home'>
       <div className="home__body">
-        <div className="home__list">
-          {createdItem &&
-            <div className="item-creator">
-              <Item item={createdItem} onChange={createdItemChanged}></Item>
-              <button onClick={saveClicked} className="item-creator__save-button button">Ok</button>
-            </div>
-          }
+        <div className="home__left">
+          <div className="home__list">
+            {createdItem &&
+              <div className="item-creator">
+                <Item item={createdItem} onChange={createdItemChanged}></Item>
+                <button onClick={saveClicked} className="item-creator__save-button button">Ok</button>
+              </div>
+            }
 
-          {!createdItem && <button onClick={createClicked} className="button list-item home__create-button">Create</button>}
+            {!createdItem && <button onClick={createClicked} className="button list-item home__create-button">Create</button>}
 
-          {/* list */}
-          {renderedItems && renderedItems.length > 0 && <ul className="list">{renderedItems}</ul>}
+            {/* list */}
+            {renderedItems && renderedItems.length > 0 && <ul className="list">{renderedItems}</ul>}
 
-          {/* Loading list */}
-          {!renderedItems && <p>Loading...</p>}
+            {/* Loading list */}
+            {!renderedItems && <p>Loading...</p>}
 
-          {/* Empty State */}
-          {renderedItems && !renderedItems.length && <p>Empty State</p>}
+            {/* Empty State */}
+            {renderedItems && !renderedItems.length && <p>Empty State</p>}
+          </div>
+
+          <svg id="svg" className="svg" width="100%" height="100%">{renderedSvgItems}</svg>
         </div>
-
-        <svg id="svg" className="svg" width="100%" height="100%">{renderedSvgItems}</svg>
+        {showInfoPanel && !!currentItem &&
+          <div className="home__right">
+            <InfoPanel item={currentItem} onChange={itemChanged} onClose={closeInfoPanel}></InfoPanel>
+          </div>
+        }
       </div>
-    </main>
+    </main >
   )
 }

@@ -38,7 +38,15 @@ body {
     &__body {
         height: 98vh;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+    }
+
+    &__left {
+        flex-grow: 1;
+    }
+
+    &__right {
+        width: 200px;
     }
 
     &__list {
@@ -99,4 +107,38 @@ body {
     &__item-rect {
         fill: $main-color;
     }
+}
+
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-size: 20px;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__close {
+        height: 100%;
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+}
+
+.textarea-label {
+    background: #0000;
+    resize: none;
+    margin: 0;
+    font-size: 18px;
+    line-height: 24px;
+    height: 24px;
+    box-shadow: none;
+    border: none;
+    padding-left: 4px;
+    padding-right: 4px;
 }
